@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import Buttonss from './Buttonss';
+import {Link} from 'react-router-dom';
 
 class NavBar extends Component{
     constructor(props){
@@ -16,15 +18,19 @@ render(){
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
+  <Buttonss/>
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        <Link to ='/dashboard' class="nav-link" >Home <span class="sr-only">(current)</span></Link>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">My Profile</a>
+        <Link to ='/profile' class="nav-link" >My Profile</Link>
       </li>
-      <li class="nav-item dropdown">
+      <li class="nav-item">
+        <Link to ='/dashboard' class="nav-link" >Posts</Link>
+      </li>
+      {/* <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="Visibility" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Posts
         </a>
@@ -32,10 +38,11 @@ render(){
           <a class="dropdown-item" href="#">Public Posts</a>
           <a class="dropdown-item" href="#">Private Posts</a>
         </div>
-      </li>
+      </li> */}
       <li class="nav-item">
         <a class="nav-link" href="#">Logout</a>
       </li>
+
     </ul>
   </div>
 </nav>

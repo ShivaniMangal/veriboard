@@ -2,6 +2,7 @@ import React from 'react';
 import ReadMoreAndLess from 'react-read-more-less';
 import axios from 'axios'
 
+
 class Dashboard extends React.Component {
 
   constructor(props) {
@@ -80,7 +81,7 @@ class Dashboard extends React.Component {
       i => {
         for(var j = 0; j < i.members.length ; j++){
           console.log(i.members[j])
-        if(i.members[j] == "amal121"){  
+        if(i.members[j] == "amal121"){
         return <div className="container" style = {{width : '60rem', padding: '2px 16px'}}>
           <hr />
           <div class="card" style = {{width : '50rem', align: 'center', rgba:'(0,0,0,0.2)',transition: '0.3s'}}>
@@ -101,6 +102,8 @@ class Dashboard extends React.Component {
                 </ReadMoreAndLess>
                 <br /> <br />
                 <button class="btn btn-outline-primary" >Open Discussion</button><br /> <br />&nbsp;&nbsp;
+                 <br /> <br />
+
               </div> 
             </div>
           </div>
