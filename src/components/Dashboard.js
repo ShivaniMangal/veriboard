@@ -1,9 +1,10 @@
 import React from 'react';
-import './styles.css'
+//import './styles.css'
 import ReadMoreReact from 'read-more-react';
 import ReadMoreAndLess from 'react-read-more-less';
 import {Modal,Button,ButtonToolbar,Form} from 'react-bootstrap'
-import Newpost from './Newpost'
+// import Newpost from './Newpost'
+import {Link} from 'react-router-dom'
 
 class Dashboard extends React.Component {
 
@@ -69,7 +70,7 @@ class Dashboard extends React.Component {
 
     let list = this.state.posts.map(
       i => {
-        return <div className="container" style = {{width : '60rem', padding: '2px 16px', backgroundColor : 'black'}}>
+        return <div className="container" style = {{width : '60rem', padding: '2px 16px'}}>
           <hr />
           <div class="card" style = {{width : '50rem', align: 'center', rgba:'(0,0,0,0.2)',transition: '0.3s'}}>
             <div >
@@ -88,7 +89,7 @@ class Dashboard extends React.Component {
                  {i.content}
                 </ReadMoreAndLess>
                  <br /> <br />
-                 <button class="btn btn-outline-primary" >Open Discussion</button><br /> <br />&nbsp;&nbsp;
+                 <Link to ='/viewpost'><button class="btn btn-outline-primary" >Open Discussion</button></Link><br /> <br />&nbsp;&nbsp;
               </div> 
             </div>
           </div>

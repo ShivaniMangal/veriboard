@@ -1,12 +1,12 @@
 import React from 'react'
-import './Profile1.css'
+import '../styles/profile.module.css'
+import {Link} from 'react-router-dom'
 
-export default class Profile1 extends React.Component {
+export default class Profile extends React.Component {
     constructor() {
         super();
         this.state = {
             user: 'User_957',
-            type: 'Registered',
             contributions: [{ postId: 'pid_145', post: 'The Amazon is on fire', board: 'Environment' },
             { postId: 'pid_186', post: 'Riya is great on gantt chart', board: 'People' },
             { postId: 'pid_201', post: 'Neel knows everything', board: 'Inspiring People' }],
@@ -20,7 +20,7 @@ export default class Profile1 extends React.Component {
                 <div class="card-body">
                     <p class="card-text">{item.post}</p>
                     <footer class="blockquote-footer">from the Board <cite title="Source Title">{item.board}</cite></footer>
-                    <a class="btn btn-primary">View Post</a>
+                    <Link to ='/viewpost' class="btn btn-primary">View Post</Link>
                 </div>
 
             </div>
@@ -48,7 +48,7 @@ export default class Profile1 extends React.Component {
                 <div className="leftpane">
                     <img src="https://image.flaticon.com/icons/png/512/21/21294.png" alt="user's DP" width="200" height="150" />
                     <br /><table><th>User_ID</th><th> <h6>: {this.state.user}</h6></th>
-                        <tr><td><h6>User_Type</h6></td><td><h6>: {this.state.type}</h6></td></tr></table>
+                        </table>
                 </div>
                 <div className="middlepane">
                     <h3>List of Contributions to Groups</h3>
