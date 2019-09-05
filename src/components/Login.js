@@ -28,6 +28,9 @@ export default class Login extends React.Component{
         this.state.success=true;
         username = this.state.email
         alert("login successful")
+        localStorage.setItem('username',username)
+        window.open("http://localhost:3000/dashboard","_self")
+
         break;
       }
       else{
@@ -35,7 +38,7 @@ export default class Login extends React.Component{
         break;
       }
     }
-    localStorage.setItem('username',username)
+   
   }
  handleChange =(e)=>{
     this.setState({
