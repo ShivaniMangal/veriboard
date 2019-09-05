@@ -2,7 +2,6 @@ import React from 'react';
 import ReadMoreAndLess from 'react-read-more-less';
 import axios from 'axios'
 
-
 class Dashboard extends React.Component {
 
   constructor(props) {
@@ -15,7 +14,10 @@ class Dashboard extends React.Component {
       temp_title: '',
       temp_content: '',
       boards :[],
-      show : false
+      boardLength : 0,
+      show : false,
+      members : [],
+      temp_board : ''
     }
   }
 
@@ -23,9 +25,20 @@ class Dashboard extends React.Component {
     axios.get('http://192.168.20.97:8080/showboard')
         .then(response => {
             const data = JSON.parse(JSON.stringify(response.data));
-            console.log(data)
             this.setState({
-              boards : data
+              boards : data,
+              boardLength : data.length + 1001 
+            });
+        })
+  }
+
+  componentDidUpdate() {
+    axios.get('http://192.168.20.97:8080/showboard')
+        .then(response => {
+            const data = JSON.parse(JSON.stringify(response.data));
+            this.setState({
+              boards : data,
+              boardLength : data.length + 1001 
             });
         })
   }
@@ -37,15 +50,35 @@ class Dashboard extends React.Component {
   }
 
   handleSubmit = (event) => {
+    let axiosConfig = {
+      headers: {
+          'Content-Type': 'application/json'
+      }
+    }
     let current = this.state.posts.slice();
+    let inputs = this.state.temp_board.split(",")
+    const postData = {
+      flag : 'private',
+      board_id : this.state.boardLength,
+      topic : this.state.temp_title,
+      creator : this.state.temp_title,
+      members : inputs,
+      posts : [{
+       postid : 1,
+       username : this.state.temp_title,
+       data : [this.state.temp_content],
+       }]
+    };
     current.push({ title: this.state.temp_title, content: this.state.temp_content})
+     axios.post('http://192.168.20.97:8080/addboard', postData , axiosConfig)
+     .then(res => {
+     })
     this.setState({
       posts: current,
       temp_title: '',
       temp_content: '',
       show : false
     })
-    console.log(this.state.show)
     event.preventDefault();
   }
 
@@ -61,6 +94,11 @@ class Dashboard extends React.Component {
     })
   }
 
+  openDiscussion = (bid) =>{
+    window.open("http://localhost:3000/viewpost", "_self")
+    localStorage.setItem("boardId", bid)
+  }
+
   render() {
     let posts =
     <form class = "form-group">  
@@ -68,7 +106,10 @@ class Dashboard extends React.Component {
     <input placeholder = "Discussion Title" class = "form-control" type="text" name="temp_title" value={this.state.temp_title} onChange={this.handleChange} style = {{width : '35rem'}}/><br /><br />
     </center>
     <center>
-    <textarea placeholder = "What's on your mind" class = "form-control" name="temp_content" value={this.state.temp_content} onChange={this.handleChange} style = {{width : '35rem', height : '10rem'}}/>
+    <textarea placeholder = "What's on your mind" class = "form-control" name="temp_content" value={this.state.temp_content} onChange={this.handleChange} style = {{width : '35rem', height : '10rem'}}/><br /> <br />
+    </center>
+    <center>
+    <input type = "text" placeholder = "Manage who can see your board" class = "form-control" name="temp_board" value={this.state.temp_board} onChange={this.handleChange} style = {{width : '35rem'}}/>
     </center>
     <br /><br />
     <button class="btn btn-outline-danger" onClick = {this.handleSubmit}>Post Discussion</button>
@@ -79,9 +120,10 @@ class Dashboard extends React.Component {
 
     let list = this.state.boards.map(
       i => {
+        if(i.members){
+          let bid = i.board_id
         for(var j = 0; j < i.members.length ; j++){
-          console.log(i.members[j])
-        if(i.members[j] == "amal121"){
+        if(i.members[j] == "anshbhar112"){
         return <div className="container" style = {{width : '60rem', padding: '2px 16px'}}>
           <hr />
           <div class="card" style = {{width : '50rem', align: 'center', rgba:'(0,0,0,0.2)',transition: '0.3s'}}>
@@ -101,7 +143,7 @@ class Dashboard extends React.Component {
                 {i.posts[0].data}
                 </ReadMoreAndLess>
                 <br /> <br />
-                <button class="btn btn-outline-primary" >Open Discussion</button><br /> <br />&nbsp;&nbsp;
+                <button class="btn btn-outline-primary" onClick = {()=>this.openDiscussion(bid)}>Open Discussion</button><br /> <br />&nbsp;&nbsp;
                  <br /> <br />
 
               </div> 
@@ -110,14 +152,16 @@ class Dashboard extends React.Component {
 
           <br />
         </div>
-      }
-    }
-    }
-    );
+      }}
+    }});
 
 
+    let imgUrl = '..\download.png'
 
     return (
+      <div class = "row" >
+        <div class = "column" style = {{ float: 'left', width: '25%', backgroundColor : '#cccccc'}} />
+        <div class = "column" style = {{ float: 'left', width: '50%'}}>
         <div className="container" style = {{padding: '2px 16px'}}>
             <br />
             <h3> Veriboard Discussion Forums</h3>
@@ -126,6 +170,9 @@ class Dashboard extends React.Component {
           <br/ > <br />
          {this.state.show?posts:<div></div>}
         <center>{list}</center>
+      </div>
+      </div>
+      <div class = "column" style = {{ float: 'left', width: '25%', backgroundColor : '#cccccc'}}/> 
       </div>
     )
   }
