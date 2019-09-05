@@ -28,7 +28,7 @@ render(){
         <Link to ='/profile' class="nav-link" >My Profile</Link>
       </li>
       <li class="nav-item">
-        <Link to ='/dashboard' class="nav-link" >Posts</Link>
+        <Link to ='/viewpost' class="nav-link" >Posts</Link>
       </li>
       {/* <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="Visibility" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
