@@ -20,7 +20,9 @@ class Dashboard extends React.Component {
       temp_board : '',
       usernames : [],
       username :'',
-      names : ''
+      addedname : '',
+      names : '',
+      temp_added : []
     }
   }
 
@@ -67,13 +69,13 @@ class Dashboard extends React.Component {
       }
     }
     let current = this.state.posts.slice();
-    let inputs = this.state.temp_board.split(",")
+    console.log(this.state.temp_added)
     const postData = {
       flag : 'private',
       board_id : this.state.boardLength,
       topic : this.state.temp_title,
       creator : localStorage.getItem("username"),
-      members : inputs,
+      members : this.state.temp_added,
       posts : [{
        postid : 1,
        username : this.state.temp_title,
@@ -135,13 +137,25 @@ class Dashboard extends React.Component {
     localStorage.setItem("boardId", bid)
   }
 
+  addMembers = (evt) => {
+    console.log(evt.currentTarget.textContent)
+    let value = evt.currentTarget.textContent
+     let addedArr = this.state.temp_added
+    let added = value
+    console.log(this.refs.addedname)
+    addedArr.push(added)
+    this.setState({
+         temp_added : addedArr
+     })
+  }
+
   render() {
     let userList = []
         for(var i = 0; i<this.state.names.length;i++){
             userList.push(
-                <div>{this.state.names[i]}</div>
+              <div class="list-group-item" name="addedname" value={this.state.addedname} onChange={this.handleChange} onClick = {this.addMembers}>{this.state.names[i]}</div>
             )
-        }
+        }    
 
     let posts =
     <form class = "form-group">  
@@ -151,11 +165,14 @@ class Dashboard extends React.Component {
     <center>
     <textarea placeholder = "What's on your mind" class = "form-control" name="temp_content" value={this.state.temp_content} onChange={this.handleChange} style = {{width : '35rem', height : '10rem'}}/><br /> <br />
     </center>
+    <center> 
+    <input placeholder = "Added Members" class = "form-control" type="text" name="temp_added" value={this.state.temp_added} onChange={this.handleChange} style = {{width : '35rem'}}/><br /><br />
+    </center>
     <center>
     <input type = "text" placeholder = "Manage who can see your board" class = "form-control" ref="username" type="text" name="userN" onChange={this.handleChangeUser} style = {{width : '35rem'}}/>
     </center>
     <br /><br />
-    <center>{userList}</center>
+    <center><div class="list-group">{userList}</div></center>
     <button class="btn btn-outline-danger" onClick = {this.handleSubmit}>Post Discussion</button>
   </form> 
 
