@@ -6,6 +6,7 @@ import Login from '../components/Login';
 import Profile from '../components/profile';
 import Register from '../components/Register';
 import Buttonss from '../components/Buttonss'
+import Home from '../components/Home'
 
 const Router = () => {
 
@@ -18,6 +19,7 @@ const Router = () => {
                 <Route path ="/login" component={Login}></Route>
                 <Route path ="/profile" component={Profile}></Route>
                 <Route path ="/loginhome" component={Buttonss}></Route>
+                <Route path = "/" component={Home}></Route>
             </Switch>
         </div>
     );

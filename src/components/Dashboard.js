@@ -1,6 +1,7 @@
 import React from 'react';
 import ReadMoreAndLess from 'react-read-more-less';
-import axios from 'axios'
+import axios from 'axios';
+import '../styles/pages.css';
 
 class Dashboard extends React.Component {
 

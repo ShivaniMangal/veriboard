@@ -2,10 +2,18 @@ import React from 'react';
 import NavBar from './components/NavBar';
 import EachPost from './components/EachPost'
 import Router from './components/Router'
+import Home from './components/Home'
+import Buttonss from './components/Buttonss'
+
 const App= () => {
   return (
-    <div className="App">
-      <NavBar />
+    <div>
+      {/* <Buttonss/> */}
+        {/* {console.log(localStorage.getItem("username"))}  */}
+
+       {localStorage.getItem("username")?<NavBar/>:<Buttonss/>} 
+    
+     
       <Router/>
     </div>
   );

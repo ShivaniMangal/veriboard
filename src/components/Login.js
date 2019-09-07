@@ -1,5 +1,6 @@
 import React from 'react'
 import {Modal,Button,Form, ButtonToolbar,Navbar} from 'react-bootstrap'
+import axios from 'axios'
 
 import Register from './Register'
 export default class Login extends React.Component{
@@ -8,6 +9,8 @@ export default class Login extends React.Component{
     this.state ={
       email:'',
       pass:'',
+      message:'',
+      data:'',
       userlist:[{
         emailid:'abc@gmail.com',
         password:'abc123'
@@ -21,36 +24,66 @@ export default class Login extends React.Component{
     }
    
   }
-  check =() =>{
-   let username
-    for(let i=0;i<this.state.userlist.length;i++){
-      if((this.state.userlist[i].emailid==this.state.email)&&(this.state.userlist[i].password==this.state.pass)){
-        this.state.success=true;
-        username = this.state.email
-        alert("login successful")
-        localStorage.setItem('username',username)
-        window.open("http://localhost:3000/dashboard","_self")
+  // check =() =>{
+  //  let username
+  //   for(let i=0;i<this.state.userlist.length;i++){
+  //     if((this.state.userlist[i].emailid==this.state.email)&&(this.state.userlist[i].password==this.state.pass)){
+  //       this.state.success=true;
+  //       username = this.state.email
+  //       alert("login successful")
 
-        break;
-      }
-      else{
-        alert("login failed")
-        break;
-      }
-    }
+  //       localStorage.setItem('username',username)
+
+  //       window.open("http://localhost:3001/dashboard","_self")
+
+  //       break;
+  //     }
+     
+  //   }
    
+  // }
+  post=()=>{
+  
+    const response = axios.post('http://192.168.20.87:8003/register/login', {username:this.state.username,password:this.state.password})
+    .then(res => {
+    
+  
+  const auth=JSON.parse(JSON.stringify(res.data))
+  console.log(auth)
+  this.setState({
+    data:auth.message
+   
+ 
+  })
+  // localStorage.setItem('username',username)
+  if(this.state.data === 'welcome'){
+    window.open("http://localhost:3001/dashboard","_self")
+    localStorage.setItem('username',this.state.username)
   }
+  else{
+    this.setState({
+    success:true
+    })
+  }
+})
+
+}
+//   post=()=>{
+//     axios.post('http://192.168.20.139:8003/register/login', {username:this.state.username,password:this.state.password},
+//       {    
+//       headers: {
+//           "Content-Type": "application/json"
+//       }
+//     }
+//   )
+ 
+// }
  handleChange =(e)=>{
     this.setState({
-      email:e.target.value
+      [e.target.name]:e.target.value
     })
   }
-  handleChange1 =(e) =>{
-    this.setState({
-      pass:e.target.value
-    })
-    console.log(this.state.pass)
-  }
+ 
 
     render(){
 
@@ -66,20 +99,22 @@ export default class Login extends React.Component{
           >
             <Modal.Header closeButton>
               <Modal.Title id="contained-modal-title-vcenter">
-               LOGIN
+               LOGIN &nbsp;
+    
               </Modal.Title>
              
             </Modal.Header>
             <Modal.Body>
+            {this.state.success?<div style={{color:"red"}}>Invalid username or password</div>:<div></div>}/
             <div className="container">
              <Form>
               <Form.Group controlId="formGroupEmail">
-                <Form.Label>Email Address</Form.Label>
-                  <Form.Control type="email" placeholder="abc@example.com" name="email" onChange ={this.handleChange}/>
+                <Form.Label>Username</Form.Label>
+                  <Form.Control type="text" placeholder="username" name="username" onChange ={this.handleChange}/>
               </Form.Group>
               <Form.Group>
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="password" name="pass" onChange={this.handleChange1}/>
+                <Form.Control type="password" placeholder="password" name="password" onChange={this.handleChange}/>
               </Form.Group>
              </Form>
             </div>
@@ -88,7 +123,7 @@ export default class Login extends React.Component{
             <Modal.Footer>
             <ButtonToolbar>
              
-              <Button onClick={this.check}>Sign in</Button>
+              <Button onClick={this.post}>Sign in</Button>
               &nbsp;&nbsp;
               <Button variant="secondary" onClick={this.props.onHide} >Cancel</Button>
             </ButtonToolbar>

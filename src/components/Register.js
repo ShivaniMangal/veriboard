@@ -10,12 +10,13 @@ export default class Register extends Component{
     this.state ={
       pass:'',
       pass1:'',
-      success:false,
+      success:true,
       firstname:'',
       lastname:'',
       username:'',
       email:'',
-      password:''
+      password:'',
+      data:''
       
     }
   }
@@ -29,29 +30,76 @@ export default class Register extends Component{
   }
   
     
+ handleSubmit =() =>{ 
   
-  check=()=>{
-    console.log(this.state.pass)
-    console.log(this.state.pass1)
+    
     if(this.state.password===this.state.pass1){
-     alert("match")
+      // console.log("match")
+      // post=()=>{
+      
+        const response = axios.post('http://192.168.20.87:8003/register/', {firstname:this.state.firstname,lastname:this.state.lastname,username:this.state.username,email:this.state.email,password:this.state.password},)
+        .then(res => {
+        
+      
+      const auth=JSON.parse(JSON.stringify(res.data))
+      console.log(auth)
+      this.setState({
+        data:auth.message
+      
+      })
+    
+
+      
+      })
+      // window.open("http://localhost:3001/","_self")
+    //}
     }
     else{
       this.setState({
-        success:true
+        success:false
+        
+    
       })
     }
-  }
-  post=()=>{
-    axios.post('http://192.168.20.139:8003/register/', {firstname:this.state.firstname,lastname:this.state.lastname,username:this.state.username,email:this.state.email,password:this.state.password},
-      {    
-      headers: {
-          "Content-Type": "application/json"
-      }
-    }
-  )
-  window.open('','_self')
+    
+ 
+  
 }
+//   post=()=>{
+//     axios.post('http://192.168.20.87:8003/register/', {firstname:this.state.firstname,lastname:this.state.lastname,username:this.state.username,email:this.state.email,password:this.state.password},
+//       {    
+//       headers: {
+//           "Content-Type": "application/json"
+//       }
+//     }
+//     .then(res => {
+    
+  
+//       const auth=JSON.parse(JSON.stringify(res.data))
+//       console.log(auth)
+//   )}
+//   window.open('','_self')
+//   alert("signed in")
+// }
+// post=()=>{
+  
+//   const response = axios.post('http://192.168.20.87:8003/register/', {firstname:this.state.firstname,lastname:this.state.lastname,username:this.state.username,email:this.state.email,password:this.state.password},)
+//   .then(res => {
+  
+
+// const auth=JSON.parse(JSON.stringify(res.data))
+// console.log(auth)
+// this.setState({
+//   data:auth.message
+
+// })
+// this.handleSubmit()
+// alert(this.state.data)
+
+// // if(this.state.data === 'welcome'){
+// //   window.open("http://localhost:3001/dashboard","_self")
+// // }
+// })}
     render(){
         return(
             <div>
@@ -65,7 +113,7 @@ export default class Register extends Component{
             </Modal.Header>
             <Modal.Body>
             <div className="container">
-             <Form>
+             <Form >
               <Form.Group controlId="formGroupEmail">
                 <Form.Label>First Name</Form.Label>
                   <Form.Control type="text" name="firstname" placeholder="FirstName" onChange={this.handleChange}/>
@@ -75,6 +123,7 @@ export default class Register extends Component{
                 <Form.Control type="text"  name="lastname"placeholder="LastName" onChange={this.handleChange}/>
             </Form.Group>
             <Form.Group controlId="formGroupEmail">
+              {this.state.data?<div style={{color:"red"}}>Username exists</div>:<div></div>}
             <Form.Label>Username</Form.Label>
               <Form.Control type="text" name="username"placeholder="abc_123" onChange={this.handleChange}/>
             </Form.Group>
@@ -88,10 +137,14 @@ export default class Register extends Component{
                 <Form.Control type="password"   placeholder="password" name="password" onChange={this.handleChange}/>
               </Form.Group>
               
-             
+             {this.state.success?<div></div>:<div style={{color:"red"}}>Passwords don't match</div>}
               <Form.Group>
-                <Form.Label>Retype Password</Form.Label>
-                <Form.Control type="password" placeholder="retype-password" name="pass1" onChange={this.handleChange1}/>
+                <Form.Label >Retype Password</Form.Label>
+                <Form.Control type="password" placeholder="retype-password" name="pass1" onChange={this.handleChange}/>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Profile Image:</Form.Label>
+                <Form.Control type="file" name="imageupload"/>
               </Form.Group>
              </Form>
             </div>
@@ -99,7 +152,7 @@ export default class Register extends Component{
             </Modal.Body>
             <Modal.Footer>
             <ButtonToolbar>
-              <Button onClick={this.post}>Sign Up</Button>
+              <Button onClick={this.handleSubmit}>Sign Up</Button>
               &nbsp;&nbsp;
               <Button variant="secondary" onClick={this.props.onHide} >Cancel</Button>
             

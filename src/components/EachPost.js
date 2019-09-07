@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import '../styles/pages.css';
 
 class EachPost extends Component{
     constructor (props){
@@ -46,9 +47,9 @@ class EachPost extends Component{
     
     render(){
         return(
-                //  <div class="card" > //style="width: 18rem;">
-                // <div class= "card bg-light mb-3">
-                // <div class="col-sm-6" class={card.car
+                //  <div className="card" > //style="width: 18rem;">
+                // <div className= "card bg-light mb-3">
+                // <div className="col-sm-6" class={card.car
                 <div class ="row justify-content-center">
                 <div class="col-9">
                 <div class="card" >
