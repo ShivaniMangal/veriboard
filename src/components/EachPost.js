@@ -1,39 +1,68 @@
 import React, {Component} from 'react'
 import '../styles/pages.css';
 
+import axios from 'axios'
+
 class EachPost extends Component{
     constructor (props){
         super(props)
 
         this.state={
-            newPost:{
-            'id':'',
-            'post':''.anchor,
-            },
-            comments:[]
+            // newPost:{
+            // 'id':'',
+            // 'post':''.anchor,
+            // },
+            posts:[{'username':'', 'post':''}],
+
+           newPost: {"flag":'',"board_id":'',"topic":'',"tag":[],"creator":'',"members":[],"posts":[{"postid":'',"username":'',"data":[]}]}
         }
 
+ 
     }
 
     handlePost = (event) => {
         
-                fetch('http://localhost:3000/newPost', {
+                fetch('http://192.168.20.97:8080/showboard', {
                     method: 'POST',
                     body: JSON.stringify(this.state.newPost),
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Access-Control-Allow-Origin":"*"
                     }
                 }).then(response =>
                     console.log("Post Entered"));
                 
                 }
 
-// componentDidMount(){
-//     fetch('http://localhost:3000/newPost')
-//     .then(response => response.json() )
-//     .then(json => console.log(json.data))
-//      .then(json=> this.setState({comments:json.data}))
-// }
+componentDidMount(){
+        axios.get("http://192.168.20.97:8080/showboard")
+            .then(res =>
+                {
+                    
+                    let tempPosts = [{'username':'', 'post':''}]
+                    // console.log(res.data[0].posts[0])
+                    // if(res.data.posts != null){
+                    for(let i = 0; i<res.data.length; i++){
+                        //console.log(res.data[i].posts.length)
+                        if(res.data[i].posts){
+                        for(let j=0;  j<res.data[i].posts.length ; j++){
+                            tempPosts.push({'username':res.data[i].posts[j].username,'post':res.data[i].posts[j].data[0]})
+                          //  console.log(res.data[1].posts[j].data[0])
+                          //  console.log(tempPosts)
+                         
+                        }
+                    }
+                    }
+
+                    this.setState({
+                        posts:tempPosts
+
+                    })
+                 }
+               )
+            .catch(res => console.log(res))
+                
+}
 
      handlePostSend = (event) => {
                     let name = event.target.name;
@@ -46,6 +75,16 @@ class EachPost extends Component{
 
     
     render(){
+
+        // let posts = <div>
+        //     post
+        // </div>
+
+        // for(let i = 0; i <= this.state.comments.length; i++ ){
+        //     posts = <div>{this.state.comments[i].posts.length}</div>
+        // }
+        
+
         return(
                 //  <div className="card" > //style="width: 18rem;">
                 // <div className= "card bg-light mb-3">
@@ -68,12 +107,14 @@ class EachPost extends Component{
                     <a href="#" class="card-link">Report</a>
                 </div>
                 <div class="card-body">
-                <div class="card-text">
-                {this.state.comments.map((comment,index)=>(
-                    <ul key={index}>
-                    <li >{comment.post}</li>
-                    </ul>
-                ))}
+                <div class="card">
+                 {this.state.posts && this.state.posts.map((posts,index)=>(
+                    <ul class="list-group list-group-flush"  key={index}>
+                    <li class="list-group list-group-flush">{posts.username} {posts.post}</li>
+                    {/* {console.log(posts.username)} */}
+                    </ul> 
+                    ))} 
+                
                 </div>
                 </div>
                 </div>
