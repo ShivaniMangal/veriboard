@@ -2,6 +2,8 @@ import React from 'react';
 import ReadMoreAndLess from 'react-read-more-less';
 import axios from 'axios';
 import '../styles/pages.css';
+import {Link} from 'react-router-dom'
+import EachPost from './EachPost'
 
 class Dashboard extends React.Component {
 
@@ -23,17 +25,30 @@ class Dashboard extends React.Component {
       username :'',
       addedname : '',
       names : '',
-      temp_added : []
+      temp_added : [],
+      board_ID:[],
+      currentindex:0,
+      eachPost:[
+        {
+        postid:0,
+        username:'',
+        data:[]
+        }
+      ]
     }
+    
+    this.handleBoardId = this.handleBoardId.bind(this)
   }
 
   componentDidMount() {
     axios.get('http://192.168.20.97:8080/showboard')
         .then(response => {
             const data = JSON.parse(JSON.stringify(response.data));
+            // console.log(response.boards.board_id)
             this.setState({
               boards : data,
-              boardLength : data.length + 1001 
+              boardLength : data.length + 1001,
+            
             });
         })
 
@@ -96,6 +111,7 @@ class Dashboard extends React.Component {
     event.preventDefault();
   }
 
+
   handleChangeUser = (userN) => {
     console.log(this.refs.username.value)
     let postName = this.refs.username.value
@@ -120,6 +136,43 @@ class Dashboard extends React.Component {
         names: namesArr
     })
 }
+
+///Shiv
+handleBoardId = (event) =>{
+  // let axiosConfig ={
+  //   headers:{
+  //     'Content-Type':'application/json',
+  //     "Access-Control-Allow-Origin":"*"
+  //   }
+  // }
+  console.log(event.target.name)
+
+  // let postBoard ={board_id:''} 
+  // // let postBoard=new FormData()
+  // postBoard.append("board_id", this.state.boards[event.target.name].board_id)
+  // let boardID=  this.state.boards[event.target.name].board_id
+  // console.log(boardID)
+  // axios.post('http://192.168.20.97:8080/post', postBoard).then(console.log("posted"))
+  
+  let boardID=  this.state.boards[event.target.name].board_id
+  
+  
+  axios.post('http://192.168.20.97:8080/post', {board_id:boardID} )
+    .then( response =>
+      { 
+        let currentClick=response.data[response.data.length-1]
+        this.setState({eachPost:currentClick})
+        console.log("username",this.state.eachPost.username)
+        console.log("posts",this.state.eachPost.data)
+      
+    // .catch(response=>console.log(response))
+    })
+    window.open("http://localhost:3000/viewpost", "_self")
+  event.preventDefault();
+ 
+}
+//Shiv
+
 
   createPost = () => {
     this.setState({
@@ -181,7 +234,7 @@ class Dashboard extends React.Component {
 
 
     let list = this.state.boards.map(
-      i => {
+      (i,index) => {
         if(i.members){
           let bid = i.board_id
         for(var j = 0; j < i.members.length ; j++){
@@ -207,6 +260,7 @@ class Dashboard extends React.Component {
                 <br /> <br />
                 <button class="btn" style = {{backgroundColor : '#008080', color : '#fff'}} onClick = {()=>this.openDiscussion(bid)}>Open Discussion</button><br />&nbsp;&nbsp;
                  <br /> <br />
+                
 
               </div> 
             </div>

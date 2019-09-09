@@ -8,61 +8,63 @@ class EachPost extends Component{
         super(props)
 
         this.state={
-            // newPost:{
-            // 'id':'',
-            // 'post':''.anchor,
-            // },
-            posts:[{'username':'', 'post':''}],
+            posts:[{username:'', post:''}],
 
-           newPost: {"flag":'',"board_id":'',"topic":'',"tag":[],"creator":'',"members":[],"posts":[{"postid":'',"username":'',"data":[]}]}
+           newPost: {flag:'',board_id:'',topic:'',tag:[],creator:'',members:[],posts:[{postid:'',username:'',data:[]}]}
         }
 
  
     }
 
-    handlePost = (event) => {
+    // handlePost = (event) => {
         
-                fetch('http://192.168.20.97:8080/showboard', {
-                    method: 'POST',
-                    body: JSON.stringify(this.state.newPost),
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin":"*"
-                    }
-                }).then(response =>
-                    console.log("Post Entered"));
+    //             fetch('http://192.168.20.97:8080/showboard', {
+    //                 method: 'POST',
+    //                 body: JSON.stringify(this.state.newPost),
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                     "Access-Control-Allow-Origin":"*"
+    //                 }
+    //             }).then(response =>
+    //                 console.log(response,"Post Entered"));
                 
-                }
+    //             }
+
+    // handlePost = (event) => {
+    // let post=  this.state.boards[event.target.name].board_id
+
+
+    // axios.post('http://192.168.20.97:8080/post', {board_id:boardID} )
+    //     .then( response =>
+    //     { 
+    //         let currentClick=response.data[response.data.length-1]
+    //         this.setState({eachPost:currentClick})
+    //         console.log("username",this.state.eachPost.username)
+    //         console.log("posts",this.state.eachPost.data)
+        
+    //     // .catch(response=>console.log(response))
+    //     })
+    // }
 
 componentDidMount(){
-        axios.get("http://192.168.20.97:8080/showboard")
-            .then(res =>
-                {
-                    
-                    let tempPosts = [{'username':'', 'post':''}]
-                    // console.log(res.data[0].posts[0])
-                    // if(res.data.posts != null){
-                    for(let i = 0; i<res.data.length; i++){
-                        //console.log(res.data[i].posts.length)
-                        if(res.data[i].posts){
-                        for(let j=0;  j<res.data[i].posts.length ; j++){
-                            tempPosts.push({'username':res.data[i].posts[j].username,'post':res.data[i].posts[j].data[0]})
-                          //  console.log(res.data[1].posts[j].data[0])
-                          //  console.log(tempPosts)
-                         
-                        }
-                    }
-                    }
 
-                    this.setState({
-                        posts:tempPosts
-
-                    })
-                 }
-               )
-            .catch(res => console.log(res))
+        axios.get("http://192.168.20.97:8080/filteredposts")
+        .then(response=>
+            {
+                console.log(response.data[response.data.length-1].username)
+                let temp = [{username:'', post:''}]
+                temp.push({username:response.data[response.data.length-1].username, post:response.data[response.data.length-1].data})
+           
+            this.setState({
+                posts:temp
+            })
+            }).catch(response=>console.log(response))
+               
+        
+    }
+        
                 
-}
+
 
      handlePostSend = (event) => {
                     let name = event.target.name;
@@ -75,15 +77,6 @@ componentDidMount(){
 
     
     render(){
-
-        // let posts = <div>
-        //     post
-        // </div>
-
-        // for(let i = 0; i <= this.state.comments.length; i++ ){
-        //     posts = <div>{this.state.comments[i].posts.length}</div>
-        // }
-        
 
         return(
                 //  <div className="card" > //style="width: 18rem;">
@@ -107,15 +100,17 @@ componentDidMount(){
                     <a href="#" class="card-link">Report</a>
                 </div>
                 <div class="card-body">
-                <div class="card">
+             
                  {this.state.posts && this.state.posts.map((posts,index)=>(
                     <ul class="list-group list-group-flush"  key={index}>
-                    <li class="list-group list-group-flush">{posts.username} {posts.post}</li>
+                    <div class="card" >
+                    <li class="list-group list-group-flush">{posts.username}: {posts.post}</li>
                     {/* {console.log(posts.username)} */}
+                    </div>
                     </ul> 
                     ))} 
                 
-                </div>
+               
                 </div>
                 </div>
                 <div class="input-group">
