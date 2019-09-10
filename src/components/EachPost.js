@@ -1,80 +1,65 @@
 import React, {Component} from 'react'
 import '../styles/pages.css';
-
+import {connect} from 'react-redux';
+import {showFilteredPosts} from '../actions'
 import axios from 'axios'
 
-class EachPost extends Component{
+class EachPost extends React.Component{
     constructor (props){
         super(props)
 
         this.state={
-            posts:[{username:'', post:''}],
-
-           newPost: {flag:'',board_id:'',topic:'',tag:[],creator:'',members:[],posts:[{postid:'',username:'',data:[]}]}
+          newPost: {flag:'',board_id:'',topic:'',tag:[],creator:'',members:[],posts:[{postid:'',username:'',data:[]}]},
+          postData:[{username:'', data:''}],
+          enteredMessage:'',
+          profanity:''
         }
 
- 
     }
 
-    // handlePost = (event) => {
-        
-    //             fetch('http://192.168.20.97:8080/showboard', {
-    //                 method: 'POST',
-    //                 body: JSON.stringify(this.state.newPost),
-    //                 headers: {
-    //                     "Content-Type": "application/json",
-    //                     "Access-Control-Allow-Origin":"*"
-    //                 }
-    //             }).then(response =>
-    //                 console.log(response,"Post Entered"));
-                
-    //             }
-
-    // handlePost = (event) => {
-    // let post=  this.state.boards[event.target.name].board_id
-
-
-    // axios.post('http://192.168.20.97:8080/post', {board_id:boardID} )
-    //     .then( response =>
-    //     { 
-    //         let currentClick=response.data[response.data.length-1]
-    //         this.setState({eachPost:currentClick})
-    //         console.log("username",this.state.eachPost.username)
-    //         console.log("posts",this.state.eachPost.data)
-        
-    //     // .catch(response=>console.log(response))
-    //     })
-    // }
 
 componentDidMount(){
 
-        axios.get("http://192.168.20.97:8080/filteredposts")
-        .then(response=>
-            {
-                console.log(response.data[response.data.length-1].username)
-                let temp = [{username:'', post:''}]
-                temp.push({username:response.data[response.data.length-1].username, post:response.data[response.data.length-1].data})
-           
-            this.setState({
-                posts:temp
-            })
-            }).catch(response=>console.log(response))
-               
+        this.props.showFilteredPosts();
+}
         
+
+handleChange = (event) =>{
+    this.setState({
+        [event.target.name] : event.target.value
+    })
+} 
+
+call = () => {
+    console.log(this.state.profanity)
+}
+
+                
+addCommentsToPosts = (event) =>{
+        event.preventDefault()
+        let showpost=true
+        let boardID = localStorage.getItem("boardId")
+        console.log(boardID)
+        let post = this.state.postData
+        post.push( {boardid: boardID,username: localStorage.getItem("username"),
+                        data: this.state.enteredMessage, showpost: showpost})
+         this.setState({
+             postData:post
+         })
+        //  console.log(this.state.postData[this.state.postData.length-1])
+         let postToEndpoint = this.state.postData[this.state.postData.length-1]
+         axios.post('http://192.168.20.87:8002/boards/addpost', postToEndpoint )
+        //  .then(res=>console.log(res.data.message))
+         .then(response=>{
+             if(response.data.message !== 'Post created'){
+                 let len = response.data.message.length
+                 let str = response.data.message.substring(2,len-2)
+                 alert('Please refrain from using foul language like '+str)
+             }
+         })
+        
+        //  window.open("/viewpost", "_self")
     }
-        
-                
-
-
-     handlePostSend = (event) => {
-                    let name = event.target.name;
-                    let value = event.target.value;
-                    this.setState(prevState => ({ newPost: { ...prevState.newPost, ['post']: value } }))
-                    event.preventDefault()
-                    // event.target.value=" ";
-                }      
-                
-
     
     render(){
 
@@ -101,10 +86,10 @@ componentDidMount(){
                 </div>
                 <div class="card-body">
              
-                 {this.state.posts && this.state.posts.map((posts,index)=>(
+                 {this.props.posts && this.props.posts.map((posts,index)=>(
                     <ul class="list-group list-group-flush"  key={index}>
                     <div class="card" >
-                    <li class="list-group list-group-flush">{posts.username}: {posts.post}</li>
+                    <li class="list-group list-group-flush">{posts.username}: {posts.data}</li>
                     {/* {console.log(posts.username)} */}
                     </div>
                     </ul> 
@@ -115,9 +100,9 @@ componentDidMount(){
                 </div>
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Message" aria-label="Message" 
-                    aria-describedby="basic-addon2" onChange={this.handlePostSend}/> 
+                    aria-describedby="basic-addon2" name='enteredMessage' value={this.state.enteredMessage} onChange={event => this.handleChange(event)}/> 
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" onClick={this.handlePost} >Post</button>
+                        <button class="btn btn-outline-secondary" type="button" onClick={this.addCommentsToPosts} >Post</button>
                     </div>
                     </div>
                 </div>
@@ -125,6 +110,8 @@ componentDidMount(){
         
         )
     }
-}
 
-export default EachPost;
+
+}
+const mapStateToProps = state => ({posts: state.postFromReducer });
+export default connect (mapStateToProps, {showFilteredPosts: showFilteredPosts})(EachPost)
