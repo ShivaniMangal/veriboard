@@ -1,75 +1,34 @@
 import React from 'react';
 import ReadMoreAndLess from 'react-read-more-less';
-import axios from 'axios';
-import '../styles/pages.css';
-import {Link} from 'react-router-dom'
-import EachPost from './EachPost'
-
+import axios from 'axios'
+import { getPostsDetails} from '../action';
+import {getUsersDetails} from '../action'
+import { connect } from 'react-redux'
 class Dashboard extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      posts: [
-        { title: 'asdsda', username : 'User1', content: 'Cards that show cryptocurrency-related data, including a chart. Can be used for showing other data, such as fiat currency or stock market prices.'},
-        { title: 'uywerywue', username : 'User 2', content: 'Cards that show cryptocurrency-related data, including a chart. Can be used for showing other data, such as fiat currency or stock market prices.'},
-      ],
+      posts : [],
       temp_title: '',
       temp_content: '',
-      boards :[],
-      boardLength : 0,
       show : false,
       members : [],
       temp_board : '',
-      usernames : [],
       username :'',
       addedname : '',
       names : '',
-      temp_added : [],
-      board_ID:[],
-      currentindex:0,
-      eachPost:[
-        {
-        postid:0,
-        username:'',
-        data:[]
-        }
-      ]
+      temp_added : []
     }
-    
-    this.handleBoardId = this.handleBoardId.bind(this)
   }
 
   componentDidMount() {
-    axios.get('http://192.168.20.97:8080/showboard')
-        .then(response => {
-            const data = JSON.parse(JSON.stringify(response.data));
-            // console.log(response.boards.board_id)
-            this.setState({
-              boards : data,
-              boardLength : data.length + 1001,
-            
-            });
-        })
-
-        axios.get('http://192.168.20.87:8003/register/usernames')
-        .then(response => {
-            const data = JSON.parse(JSON.stringify(response.data));
-            this.setState({
-                usernames: data
-            });
-        })    
+    this.props.getPostsDetails();
+    this.props.getUsersDetails();  
   }
 
   componentDidUpdate() {
-    axios.get('http://192.168.20.97:8080/showboard')
-        .then(response => {
-            const data = JSON.parse(JSON.stringify(response.data));
-            this.setState({
-              boards : data,
-              boardLength : data.length + 1001 
-            });
-        })
+      //this.props.getPostsDetails();
   }
 
   handleChange = (evt) => {
@@ -85,21 +44,21 @@ class Dashboard extends React.Component {
       }
     }
     let current = this.state.posts.slice();
-    console.log(this.state.temp_added)
+    console.log(this.state.temp_added )
     const postData = {
       flag : 'private',
-      board_id : this.state.boardLength,
       topic : this.state.temp_title,
-      creator : localStorage.getItem("username"),
+      creator : "raghuls",
       members : this.state.temp_added,
       posts : [{
        postid : 1,
        username : this.state.temp_title,
-       data : [this.state.temp_content],
+       data : this.state.temp_content,
+       showpost : false
        }]
     };
     current.push({ title: this.state.temp_title, content: this.state.temp_content})
-     axios.post('http://192.168.20.97:8080/addboard', postData , axiosConfig)
+     axios.post('http://192.168.20.87:8002/boards/addboard', postData , axiosConfig)
      .then(res => {
      })
     this.setState({
@@ -111,7 +70,6 @@ class Dashboard extends React.Component {
     event.preventDefault();
   }
 
-
   handleChangeUser = (userN) => {
     console.log(this.refs.username.value)
     let postName = this.refs.username.value
@@ -119,60 +77,21 @@ class Dashboard extends React.Component {
     this.setState({
         names: []
     })
-    for (var i = 0; i < this.state.usernames.length; i++) {
+    for (var i = 0; i < this.props.usernames.length; i++) {
         let flag = 0
         for (var j = 0; j < postName.length; j++) {
-            if (this.state.usernames[i].name[j] !== postName[j]) { flag = 1; }
+            if (this.props.usernames[i].name[j] !== postName[j]) { flag = 1; }
         }
         if (flag == 0) {
-            namesArr.push(this.state.usernames[i].name)
-            //console.log(namesArr)
+            namesArr.push(this.props.usernames[i].name)
             this.forceUpdate()
 
         }
-        // console.log(this.state.names)
     }
     this.setState({
         names: namesArr
     })
 }
-
-///Shiv
-handleBoardId = (event) =>{
-  // let axiosConfig ={
-  //   headers:{
-  //     'Content-Type':'application/json',
-  //     "Access-Control-Allow-Origin":"*"
-  //   }
-  // }
-  console.log(event.target.name)
-
-  // let postBoard ={board_id:''} 
-  // // let postBoard=new FormData()
-  // postBoard.append("board_id", this.state.boards[event.target.name].board_id)
-  // let boardID=  this.state.boards[event.target.name].board_id
-  // console.log(boardID)
-  // axios.post('http://192.168.20.97:8080/post', postBoard).then(console.log("posted"))
-  
-  let boardID=  this.state.boards[event.target.name].board_id
-  
-  
-  axios.post('http://192.168.20.97:8080/post', {board_id:boardID} )
-    .then( response =>
-      { 
-        let currentClick=response.data[response.data.length-1]
-        this.setState({eachPost:currentClick})
-        console.log("username",this.state.eachPost.username)
-        console.log("posts",this.state.eachPost.data)
-      
-    // .catch(response=>console.log(response))
-    })
-    window.open("http://localhost:3000/viewpost", "_self")
-  event.preventDefault();
- 
-}
-//Shiv
-
 
   createPost = () => {
     this.setState({
@@ -180,6 +99,11 @@ handleBoardId = (event) =>{
     })
   }
 
+  handleCancel = () => {
+    this.setState({
+      show:false
+    })
+  }
   posted = () => {
     this.setState({
       show:false
@@ -203,13 +127,31 @@ handleBoardId = (event) =>{
      })
   }
 
+  removeUser = (name) => {
+    console.log(name)
+    this.setState({
+      temp_added: this.state.temp_added.filter(el => el !== name)
+  })
+  }
+
   render() {
     let userList = []
         for(var i = 0; i<this.state.names.length;i++){
             userList.push(
               <div class="list-group-item" name="addedname" value={this.state.addedname} onChange={this.handleChange} onClick = {this.addMembers}>{this.state.names[i]}</div>
             )
-        }    
+       }
+    
+    let addedUsers = []
+      for(var i=0;i<this.state.temp_added.length;i++){
+          let name = this.state.temp_added[i]
+          addedUsers.push(<span><span class = "border border-danger rounded"  onClick={() => this.removeUser(name)}>{this.state.temp_added[i]}&nbsp;<span style = {{color:'white', backgroundColor :'#CD040B'}}> X </span></span>&nbsp;</span>)
+      }    
+
+      let emptyAddedUsers = 
+          <div style = {{float : 'left', color : 'grey'}}>
+            Added Members
+          </div>
 
     let posts =
     <form class = "form-group">  
@@ -220,28 +162,24 @@ handleBoardId = (event) =>{
     <textarea placeholder = "What's on your mind" class = "form-control" name="temp_content" value={this.state.temp_content} onChange={this.handleChange} style = {{width : '35rem', height : '10rem'}}/><br /> <br />
     </center>
     <center> 
-    <input placeholder = "Added Members" class = "form-control" type="text" name="temp_added" value={this.state.temp_added} onChange={this.handleChange} style = {{width : '35rem'}}/><br /><br />
     </center>
     <center>
     <input type = "text" placeholder = "Manage who can see your board" class = "form-control" ref="username" type="text" name="userN" onChange={this.handleChangeUser} style = {{width : '35rem'}}/>
     </center>
-    <br /><br />
-    <center><div class="list-group">{userList}</div></center>
-    <button class="btn btn-outline-danger" onClick = {this.handleSubmit}>Post Discussion</button>
+    <center><div class="list-group" style = {{width :'50%'}}>{userList}</div></center>&nbsp;
+    <center><div class = "card"  style = {{width: '50%'}}><div class = "card-body" >{this.state.temp_added.length!=0?addedUsers:emptyAddedUsers}</div></div></center>
+    <button class="btn btn-outline-danger" onClick = {this.handleSubmit}>Post Discussion</button>&nbsp;&nbsp;&nbsp;
+    <button class="btn btn-outline-danger" onClick = {this.handleCancel}>Cancel</button>&nbsp;
   </form> 
 
 
 
 
-    let list = this.state.boards.map(
-      (i,index) => {
-        if(i.members){
-          let bid = i.board_id
-        for(var j = 0; j < i.members.length ; j++){
-        if(i.members[j] == localStorage.getItem("username") || i.creator == localStorage.getItem("username")){
+    let list = this.props.boards.map(
+      i => {
         return <div className="container" style = {{width : '60rem', padding: '2px 16px'}}>
           <hr />
-          <div class="card rounded" style = {{width : '50rem' ,align: 'center', rgba:'(0,0,0,0.2)',transition: '0.3s', borderWidth : 'medium'}}>
+          <div class="card rounded" style = {{width : '50rem' ,align: 'center', borderColor : 'grey',transition: '0.3s', borderWidth : 'small'}}>
             <div >
               <div >
                 <h4 class = "card-title">
@@ -258,9 +196,8 @@ handleBoardId = (event) =>{
                 {i.posts[0].data}
                 </ReadMoreAndLess>
                 <br /> <br />
-                <button class="btn" style = {{backgroundColor : '#008080', color : '#fff'}} onClick = {()=>this.openDiscussion(bid)}>Open Discussion</button><br />&nbsp;&nbsp;
+                <button class="btn btn-outline-danger" onClick = {()=>this.openDiscussion(1)}>Open Discussion</button><br />&nbsp;&nbsp;
                  <br /> <br />
-                
 
               </div> 
             </div>
@@ -268,33 +205,24 @@ handleBoardId = (event) =>{
 
           <br />
         </div>
-      }}
-    }});
+    });
 
-
-    const image_url = 'C:/Users/verizon/Pictures/th4OUVO0N7.jpg';
+    list.reverse()
 
     return (
         <div className="container" style = {{padding: '2px 16px'}}>
             <br />
             <h3> Veriboard Discussion Forums</h3>
             <h6 style={{color:"#CD040B"}}> Ask. Discuss. Learn.</h6> <br />
-            <button class="btn btn-outline-danger center-block" name = "create" onClick = {this.createPost} style = {{float : 'left'}}>Create Post</button>  
+    {this.state.show == false?<button class="btn btn-outline-danger center-block" name = "create" onClick = {this.createPost} style = {{float : 'left'}}>Create Post</button>:<div></div>}  
           <br/ > <br />
          {this.state.show?posts:<div></div>}
         <center>{list}</center>
         </div>
     )  
-      {/* </div>
-      //</div>
-      <div class = "column" style = {{ float: 'left', width: '25%'}}> </div>
-          // background: "#466368",
-          // background: "-webkit-linear-gradient(#648880, #293f50)",
-          // background:    "-moz-linear-gradient(#648880, #293f50)",
-          // background:         "linear-gradient(#648880, #293f50)"
-          // background: "#648880",
-          // background: "linear-gradient(to top, #000, #648880, #293f50)"
-      </div> */}
   }
 }
-export default Dashboard; 
+
+
+const mapStateToProps = state => ({ boards: state.postsdata, usernames : state.usersdata });
+export default connect(mapStateToProps, { getPostsDetails, getUsersDetails})(Dashboard);
