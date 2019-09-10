@@ -5,10 +5,21 @@
     color: floralwhite;
 }
 
-
-body {
+.landing {
     background-color: black;
-    height: 100%;
+    height:100%;
+    width:100%;    
+    left: 0;
+    position: absolute;
+}
+
+
+html,body {
+    
+    margin:0; 
+    padding:0; 
+    height:100%; 
+    width:100%;
 }
 
 #root {
