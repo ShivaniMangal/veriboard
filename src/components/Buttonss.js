@@ -8,33 +8,36 @@ export default class Buttonss extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            addModalShow : false,
-            addRegisterModal:false,
+            addLoginShow : false,
+            addRegisterShow:false,
          
         }
     }
     logout=()=>{
-        localStorage.removeItem("username")
+        // localStorage.removeItem("username")
         window.location = "/"
+        localStorage.setItem('username',"*")
     }
 
-    addModalClose1 = () =>{
-        this.setState({addRegisterModal:false});
-        localStorage.removeItem("username")
+    addLoginClose = () =>{
+        this.setState({addLoginShow:false});
+        localStorage.setItem('username',"*")
         window.location ="/"
          }
-    render(){
-        let addModalClose = () =>
-        this.setState({addModalShow:false},
 
-            );
+    addRegisterClose =() =>{
+        this.setState({addRegisterShow:false})
+        window.location ="/"
+    }
+    render(){
+        
          
         return(
            
               
-                     <div style={{backgroundColor:"black"}}> &nbsp;&nbsp;  
+                     <div style={{backgroundColor:"black", height: "70px"}}> &nbsp;&nbsp;  
 
-                          {localStorage.getItem("username")?     
+                          {localStorage.getItem("username")!='*'?     
      <div>   <button className="btn btn-outline-danger btn-lg" onClick={this.logout}>logout</button></div>
     :
                            <ButtonToolbar style={{float: "right"}}>
@@ -42,22 +45,22 @@ export default class Buttonss extends React.Component{
                            <Button
                                className="btn btn-outline-info btn-lg"
                                
-                               onClick={()=> this.setState({addModalShow  :true})} 
+                               onClick={()=> this.setState({addLoginShow  :true})} 
                            >Login</Button>
                            <Login
-                               show={this.state.addModalShow}
-                               onHide={this.addModalClose1}
+                               show={this.state.addLoginShow}
+                               onHide={this.addLoginClose}
                            />
                            &nbsp;&nbsp;
                           
                            <Button
                                className="btn btn-outline-info btn-lg"
                                
-                               onClick={()=> this.setState({addRegisterModal  :true})} 
+                               onClick={()=> this.setState({addRegisterShow  :true})} 
                            >Register</Button>
                            <Register
-                               show={this.state.addRegisterModal}
-                               onHide={addModalClose}
+                               show={this.state.addRegisterShow}
+                               onHide={this.addRegisterClose}
                            />
                             </ButtonToolbar>
      
