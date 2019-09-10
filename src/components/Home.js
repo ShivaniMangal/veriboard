@@ -2,11 +2,20 @@ import React, { Component } from 'react';
 import vblogo from '../vblogo.png';
 import '../styles/home.css';
 import Navbar from '../components/NavBar'
+import Publicboard from './Publicboard';
+import {Link} from 'react-router-dom'
 
 
 
 
 class Home extends Component {
+    constructor(props){
+        super(props);
+        this.state={
+            public:false
+
+        }
+    }
 
     render() {
         return(
@@ -42,8 +51,12 @@ class Home extends Component {
                 <p className="subtitle">Ask. Discuss. Learn.</p>
                 <br />
                 <div className="subtitle">
-                    <button className="btn btn-outline-info btn-lg" id="bt-color">Get Started!</button>
-
+                    <Link to ="/publicboard">
+                    <button className="btn btn-outline-info btn-lg" id="bt-color" >Get Started! </button>
+                    {/* {this.state.public? } */}
+                   {/* {window.open("http://localhost:3000/publicboard")} */}
+                  
+                    </Link>
                 </div>
                 <div className="subtitle">
                     <img src={vblogo} alt="logo" />
