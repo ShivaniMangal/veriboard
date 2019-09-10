@@ -1,19 +1,6 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux'
 
-// const initState={
-//     postlist:[]
-// }
 
-// export function postsDataRetrieval(state=initState,action){
-//     // console.log("abx")
-//     if(action.type === "POST_DETAILS"){
-        
-//         return Object.assign({},state,{
-//             postlist:action.payload
-//         })
-//     }
-//     return state;
-// }
 export function publicDataRetreival(data = [], action) {
     if (action.type === 'PUBLIC_BOARD_DETAILS') {
         console.log(data)
@@ -26,6 +13,15 @@ export function publicDataRetreival(data = [], action) {
     return data;
 
 }
+
+export function showPostsReducer(posts = [], action){
+    if(action.type=='SHOW_POSTS'){
+            posts=action.payload;
+            return posts;
+    }
+    return posts;
+}
+
 export function postsDataRetrival(data = [], action) {
     if (action.type === 'POST_DETAILS') {
         data = action.payload;
@@ -36,19 +32,22 @@ export function postsDataRetrival(data = [], action) {
 
     return data;
 }
-export function loginDataRetrival(data = [], action) {
-    if (action.type === 'LOGIN_DETAILS') {
+
+export function usersDataRetrival(data = [], action) {
+   // console.log("data")
+    if(action.type === "USER_DETAILS") {
+        console.log("ab");
         data = action.payload;
-        // console.log("ab");
-        // console.log(data);
         return data;
     }
 
-    return data;
+    return data
 }
 
+
 export default combineReducers({
+    postFromReducer : showPostsReducer,
     postsdata: postsDataRetrival,
-    logindata: loginDataRetrival,
+    usersdata : usersDataRetrival,
     publicPostsData: publicDataRetreival
 });
