@@ -11,15 +11,22 @@ export default class Login extends React.Component{
       pass:'',
       message:'',
       data:'',
-      userlist:[{
-        emailid:'abc@gmail.com',
-        password:'abc123'
-      },
-      {
-        emailid:'xyz@gmail.com',
-        password:'xyz123'
-      }
-    ],
+      errors:{
+      username:"",
+      password:""}
+      ,
+      username:'',
+      password:'',
+    //   userlist:[{
+    //     emailid:'abc@gmail.com',
+    //     password:'abc123'
+    //   },
+    //   {
+    //     emailid:'xyz@gmail.com',
+    //     password:'xyz123'
+    //   }
+    // ],
+      
       success:false
     }
    
@@ -42,7 +49,13 @@ export default class Login extends React.Component{
   //   }
    
   // }
+  
   post=()=>{
+    const error = this.validate();
+    console.log(error)
+  this.setState({errors:error});
+  console.log(this.state.errors)
+  if(error) return
   
     const response = axios.post('http://192.168.20.87:8003/register/login', {username:this.state.username,password:this.state.password})
     .then(res => {
@@ -55,9 +68,10 @@ export default class Login extends React.Component{
    
  
   })
+  
   // localStorage.setItem('username',username)
   if(this.state.data === 'welcome'){
-    window.open("http://localhost:3001/dashboard","_self")
+    window.open("http://localhost:3000/dashboard","_self")
     localStorage.setItem('username',this.state.username)
   }
   else{
@@ -83,6 +97,17 @@ export default class Login extends React.Component{
       [e.target.name]:e.target.value
     })
   }
+  validate = () =>{
+    const errors ={};
+    // console.log(this.username)
+    if(this.state.username.trim() ==='')
+    errors.username ='Username required'
+    if(this.state.password.trim() ==='')
+    errors.password ='Password required'
+    
+    
+    return Object.keys(errors).length===0?null:errors;
+  }
  
 
     render(){
@@ -105,16 +130,21 @@ export default class Login extends React.Component{
              
             </Modal.Header>
             <Modal.Body>
-            {this.state.success?<div style={{color:"red"}}>Invalid username or password</div>:<div></div>}/
+             
+            {this.state.success?<div style={{color:"red"}}>Invalid username or password</div>:<div></div>}
             <div className="container">
              <Form>
               <Form.Group controlId="formGroupEmail">
                 <Form.Label>Username</Form.Label>
+                
                   <Form.Control type="text" placeholder="username" name="username" onChange ={this.handleChange}/>
+                 {this.state.errors?<div style={{color:"red"}}>{this.state.errors.username}</div>:<div></div>}
+                
               </Form.Group>
               <Form.Group>
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password" placeholder="password" name="password" onChange={this.handleChange}/>
+                {this.state.errors?<div style={{color:"red"}}>{this.state.errors.password}</div>:<div></div>}
               </Form.Group>
              </Form>
             </div>
