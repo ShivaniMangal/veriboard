@@ -5,6 +5,12 @@
     color: floralwhite;
 }
 
+/* .container {
+    position: fixed;
+    margin-left: 15%;
+    padding-left: 15%;
+} */
+
 .landing {
     background-color: black;
     height:100%;
@@ -70,6 +76,7 @@ button {
     font-weight: 700;
     color: floralwhite;
     border-color: teal; 
+    background-color: teal;
     border-width: 2px;
     padding: 0.5rem 2rem;
     border-radius: 1rem;
