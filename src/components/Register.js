@@ -4,6 +4,7 @@ import axios from 'axios'
 
 
 
+
 export default class Register extends Component{
   constructor(props){
     super(props);
@@ -19,10 +20,16 @@ export default class Register extends Component{
       data:'',
       errors:{},
      boards:[],
-     strength:""
-      
+     strength:"",
+    
+
     }
+    
+      
+    
   }
+  
+  
  
   handleChange =(e)=>{
     this.setState({
@@ -34,22 +41,24 @@ export default class Register extends Component{
     if(e.target.name==="password"){
       if(this.state.password.length<=2){
       this.setState({
-        strength:"weak"
+        strength:"Password strength is weak"
       })}
       else if(this.state.password.length>2 && this.state.password.length<=5){
         this.setState({
-          strength:"medium"
+          strength:"Password strength is medium"
         })
       }
       else{
         this.setState({
-          strength:"strong"
+          strength:"Password strength is strong"
         })
       }
     }
     
   }
   validate = () =>{
+
+    
     const errors ={};
     // console.log(this.username)
     if(this.state.firstname.trim() ==='')
@@ -76,28 +85,38 @@ export default class Register extends Component{
   const errors = this.validate();
     
   this.setState({errors});
+  if(errors) return
+  else{
   
     if(this.state.password===this.state.pass1){
-      // console.log("match")
-      // post=()=>{
-        
-      //   const response = axios.post('http://192.168.20.87:8003/register/', {firstname:this.state.firstname,lastname:this.state.lastname,username:this.state.username,email:this.state.email,password:this.state.password,boards:this.state.boards},)
-      //   .then(res => {
-        
-      
-      // const auth=JSON.parse(JSON.stringify(res.data))
-      // console.log(auth)
-      // this.setState({
-      //   data:auth.message
-      
-      // })
     
-      console.log("passed")
+    
+        
+        const response = axios.post('http://192.168.20.87:8003/register/', {firstname:this.state.firstname,lastname:this.state.lastname,username:this.state.username,email:this.state.email,password:this.state.password,boards:this.state.boards},)
+        .then(res => {
+        
       
-      // })
-      // window.open("http://localhost:3001/","_self")
-    //}
+      const auth=JSON.parse(JSON.stringify(res.data))
+      console.log(auth)
+      this.setState({
+        data:auth.message
+      
+      })
+      console.log(this.state.data)
+    
+     
+      console.log(this.state.data)
+    if(this.state.data=="User registered successfully"){
+      alert("User registered successfully")
+      this.props.onHide()
+      
     }
+    else{
+      alert("User already exists")
+    }
+  })
+  }
+    
     else{
 
       this.setState({
@@ -108,44 +127,16 @@ export default class Register extends Component{
     }
     
  
-  
+  }
 }
-//   post=()=>{
-//     axios.post('http://192.168.20.87:8003/register/', {firstname:this.state.firstname,lastname:this.state.lastname,username:this.state.username,email:this.state.email,password:this.state.password},
-//       {    
-//       headers: {
-//           "Content-Type": "application/json"
-//       }
-//     }
-//     .then(res => {
-    
-  
-//       const auth=JSON.parse(JSON.stringify(res.data))
-//       console.log(auth)
-//   )}
-//   window.open('','_self')
-//   alert("signed in")
-// }
-post=()=>{
-  
-  const response = axios.post('http://192.168.20.87:8003/register/', {firstname:this.state.firstname,lastname:this.state.lastname,username:this.state.username,email:this.state.email,password:this.state.password},)
-  .then(res => {
-  
 
-const auth=JSON.parse(JSON.stringify(res.data))
-console.log(auth)
-this.setState({
-  data:auth.message
-
-})
-this.handleSubmit()
-alert(this.state.data)
-
-if(this.state.data === 'welcome'){
-  window.open("http://localhost:3001/dashboard","_self")
-}
-})}
     render(){
+      let weak=<div style={{color:"red"}}>{this.state.strength}</div>
+      if(this.state.strength==="Password strength is medium")
+       weak=<div style={{color:"#6d4af7"}}>{this.state.strength}</div>
+       else if(this.state.strength==="Password strength is strong")
+      weak=<div style={{color:"green"}}>{this.state.strength}</div>
+
         return(
             <div>
             <Modal
@@ -171,7 +162,7 @@ if(this.state.data === 'welcome'){
             </Form.Group>
 
             <Form.Group controlId="formGroupEmail">
-              {this.state.data?<div style={{color:"red"}}>Username exists</div>:<div></div>}
+              {/* {this.state.data?<div style={{color:"red"}}>Username exists</div>:<div></div>} */}
             <Form.Label>Username</Form.Label>
               <Form.Control type="text" name="username"placeholder="abc_123" onChange={this.handleChange}/>
               {this.state.errors?<div style={{color:"red"}}>{this.state.errors.username}</div>:<div></div>}
@@ -186,7 +177,7 @@ if(this.state.data === 'welcome'){
               <Form.Group>
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password"   placeholder="password" name="password" onChange={this.handleChange}/>
-                {this.state.strength}
+               {weak}
               </Form.Group>
               {this.state.errors?<div style={{color:"red"}}>{this.state.errors.password}</div>:<div></div>}
              {this.state.success?<div></div>:<div style={{color:"red"}}>Passwords don't match</div>}
