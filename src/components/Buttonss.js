@@ -2,7 +2,7 @@ import React from 'react'
 import {Button,ButtonToolbar,Navbar,Nav} from 'react-bootstrap'
 import Login from './Login'
 import Register from './Register'
-import '../styles/navbar.css'
+// import '../styles/navbar.css'
 
 export default class Buttonss extends React.Component{
     constructor(props){
@@ -13,6 +13,7 @@ export default class Buttonss extends React.Component{
          
         }
     }
+  
     logout=()=>{
         // localStorage.removeItem("username")
         window.location = "/"
@@ -35,15 +36,15 @@ export default class Buttonss extends React.Component{
         return(
            
               
-                     <div style={{backgroundColor:"black", height: "70px"}}> &nbsp;&nbsp;  
+                     <div style={{backgroundColor:"black", height: "90px"}}> &nbsp;&nbsp;  
 
                           {localStorage.getItem("username")!='*'?     
-     <div>   <button className="btn btn-outline-danger btn-lg" onClick={this.logout}>logout</button></div>
+     <div>   <button className="btn btn-outline-info" style={{marginTop: "0"}} onClick={this.logout}>logout</button></div>
     :
                            <ButtonToolbar style={{float: "right"}}>
                            
                            <Button
-                               className="btn btn-outline-info btn-lg"
+                               className="btn btn-outline-info"
                                
                                onClick={()=> this.setState({addLoginShow  :true})} 
                            >Login</Button>
@@ -54,7 +55,7 @@ export default class Buttonss extends React.Component{
                            &nbsp;&nbsp;
                           
                            <Button
-                               className="btn btn-outline-info btn-lg"
+                               className="btn btn-outline-info"
                                
                                onClick={()=> this.setState({addRegisterShow  :true})} 
                            >Register</Button>
