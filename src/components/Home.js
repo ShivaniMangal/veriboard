@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import vblogo from '../vblogo.png';
+import vbard from '../1.png';
 import '../styles/home.css';
 import Navbar from '../components/NavBar'
 import Publicboard from './Publicboard';
@@ -20,6 +21,8 @@ class Home extends Component {
     render() {
         return(
             <div className="landing">
+                <img src={vbard}></img>
+                  {localStorage.setItem('username',"*")}
            
                 {/* <nav className="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
                     <div className="container">
