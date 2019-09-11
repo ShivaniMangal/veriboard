@@ -57,6 +57,7 @@ export default class Login extends React.Component{
   console.log(this.state.errors)
   if(error) return
   
+  
     const response = axios.post('http://192.168.20.87:8003/register/login', {username:this.state.username,password:this.state.password})
     .then(res => {
     
@@ -153,7 +154,7 @@ export default class Login extends React.Component{
             <Modal.Footer>
             <ButtonToolbar>
              
-              <Button onClick={this.post}>Sign in</Button>
+              <Button className="loginButton" onClick={this.post}>Sign in</Button>
               &nbsp;&nbsp;
               <Button variant="secondary" onClick={this.props.onHide} >Cancel</Button>
             </ButtonToolbar>
