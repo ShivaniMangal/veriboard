@@ -2,7 +2,7 @@ import React from 'react'
 import {Button,ButtonToolbar,Navbar,Nav} from 'react-bootstrap'
 import Login from './Login'
 import Register from './Register'
-// import '../styles/navbar.css'
+import '../styles/navbar.css'
 
 export default class Buttonss extends React.Component{
     constructor(props){
